@@ -4,6 +4,14 @@ Draggable split element for [Solid](https://github.com/solidui/solid).
 
 Inspired by [React Split](https://github.com/nathancahill/split/tree/master/packages/react-split) and [Split.js](https://github.com/nathancahill/split). Unlike React Split, Solid Split is not a wrapper around a vanilla js library. This has been built from the ground up complete with its own original set of brand new bugs and issues. Use at your own risk.
 
+## Installation
+
+Using the package from [npm](https://www.npmjs.com/package/solid-split).
+
+```
+npm install solid-split
+```
+
 ## Usage
 
 ```jsx
