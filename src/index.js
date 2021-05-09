@@ -19,18 +19,18 @@ const startDrag = (vertical, parent, onResize) => event => {
 
 const moveDrag = (vertical, parent, onResize) => event => {
     const parentRect = parent.getBoundingClientRect()
-    const parentSize = vertical ?
-        parentRect.height :
-        parentRect.width
-    const windowOffset = vertical ?
-        parentRect.top :
-        parentRect.left
-    const clientAxis = vertical ?
-        'clientY' :
-        'clientX'
-    const mousePosition = ('touches' in event) ?
-        event.touches[0][clientAxis] :
-        event[clientAxis]
+    const parentSize = vertical
+        ? parentRect.height
+        : parentRect.width
+    const windowOffset = vertical
+        ? parentRect.top
+        : parentRect.left
+    const clientAxis = vertical
+        ? 'clientY'
+        : 'clientX'
+    const mousePosition = ('touches' in event)
+        ? event.touches[0][clientAxis]
+        : event[clientAxis]
 
     const newPosition = 100 * (mousePosition - windowOffset) / parentSize
     // const unsnappedNewPosition = 100 * (mousePosition - windowOffset) / parentSize
