@@ -6,10 +6,10 @@ Inspired by [React Split](https://github.com/nathancahill/split/tree/master/pack
 
 ## Usage
 
-```
+```jsx
 import Split from "solid-split"
 
-const CoolComponent = () =>
+const SplitComponent = () =>
     <Split>
         <div>Element 1</div>
         <div>Element 2</div>
@@ -19,10 +19,10 @@ const CoolComponent = () =>
 
 ## API
 
-| Option | Type | Value |
-|---|---|---|
-| gutterSize | int | The size of the gutter between elements. **Default**: 4 (px) |
-| vertical | bool | Option to display elements vertically (as a column). **Default**: false |
+| Option | Type | Default | Value |
+|---|---|---|---|
+| gutterSize | int | 4 (px) | The size of the gutter between elements.  |
+| vertical | bool | false | Option to display elements vertically (as a column). |
 
 ## Support
 
