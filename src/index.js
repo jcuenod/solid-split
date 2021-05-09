@@ -9,6 +9,7 @@ let moveHandler
 const startDrag = (vertical, parent, onResize) => event => {
     event.preventDefault()
     document.body.style.userSelect = "none"
+    document.body.style.pointerEvents = "none"
     moveHandler = moveDrag(vertical, parent, onResize)
     document.addEventListener('mouseup', stopDrag)
     document.addEventListener('touchend', stopDrag)
@@ -16,7 +17,6 @@ const startDrag = (vertical, parent, onResize) => event => {
     document.addEventListener('mousemove', moveHandler)
     document.addEventListener('touchmove', moveHandler)
 }
-
 const moveDrag = (vertical, parent, onResize) => event => {
     const parentRect = parent.getBoundingClientRect()
     const parentSize = vertical
@@ -45,6 +45,7 @@ const moveDrag = (vertical, parent, onResize) => event => {
 }
 const stopDrag = event => {
     document.body.style.userSelect = ""
+    document.body.style.pointerEvents = ""
     document.removeEventListener('mouseup', stopDrag)
     document.removeEventListener('touchend', stopDrag)
     document.removeEventListener('touchcancel', stopDrag)
@@ -65,12 +66,12 @@ const Gutter = (props) =>
 
 const childStyle = (vertical, size, gutterSize) =>
     vertical
-        ? { height: "calc(" + size + "% - " + gutterSize + "px)" }
-        : { width: "calc(" + size + "% - " + gutterSize + "px)" }
+        ? { height: "calc(" + size + "% - " + (gutterSize / 2) + "px)" }
+        : { width: "calc(" + size + "% - " + (gutterSize / 2) + "px)" }
 const Child = props =>
     <div style={{
         display: "flex",
-        overflow: "hidden",
+        overflow: "auto",
         ...childStyle(props.vertical, props.size, props.gutterSize)
     }}>
         {props.children}
@@ -86,10 +87,6 @@ const Split = (props) => {
     } = props
     const defaultSize = 100 / children.length
     const [state, setState] = createState({ sizes: children.map(() => defaultSize) })
-
-    createEffect(() => {
-        console.log(parentRef)
-    })
 
     return (
         <div ref={parentRef} style={{ display: "flex", "flex-direction": vertical ? "column" : "row", flex: 1 }}>

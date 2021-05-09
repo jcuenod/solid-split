@@ -1,5 +1,5 @@
 import { template, addEventListener, effect, style, insert, createComponent, For, delegateEvents } from 'solid-js/web';
-import { createState, createEffect } from 'solid-js';
+import { createState } from 'solid-js';
 
 const _tmpl$ = template(`<div></div>`, 2);
 // const SNAP_POINTS = Array.from(new Array(11)).map((v, i) => (100 / 12) * (i + 1))
@@ -10,6 +10,7 @@ let moveHandler;
 const startDrag = (vertical, parent, onResize) => event => {
   event.preventDefault();
   document.body.style.userSelect = "none";
+  document.body.style.pointerEvents = "none";
   moveHandler = moveDrag(vertical, parent, onResize);
   document.addEventListener('mouseup', stopDrag);
   document.addEventListener('touchend', stopDrag);
@@ -38,6 +39,7 @@ const moveDrag = (vertical, parent, onResize) => event => {
 
 const stopDrag = event => {
   document.body.style.userSelect = "";
+  document.body.style.pointerEvents = "";
   document.removeEventListener('mouseup', stopDrag);
   document.removeEventListener('touchend', stopDrag);
   document.removeEventListener('touchcancel', stopDrag);
@@ -72,9 +74,9 @@ const Gutter = props => (() => {
 })();
 
 const childStyle = (vertical, size, gutterSize) => vertical ? {
-  height: "calc(" + size + "% - " + gutterSize + "px)"
+  height: "calc(" + size + "% - " + gutterSize / 2 + "px)"
 } : {
-  width: "calc(" + size + "% - " + gutterSize + "px)"
+  width: "calc(" + size + "% - " + gutterSize / 2 + "px)"
 };
 
 const Child = props => (() => {
@@ -84,7 +86,7 @@ const Child = props => (() => {
 
   effect(_$p => style(_el$2, {
     display: "flex",
-    overflow: "hidden",
+    overflow: "auto",
     ...childStyle(props.vertical, props.size, props.gutterSize)
   }, _$p));
 
@@ -101,9 +103,6 @@ const Split = props => {
   const defaultSize = 100 / children.length;
   const [state, setState] = createState({
     sizes: children.map(() => defaultSize)
-  });
-  createEffect(() => {
-    console.log(parentRef);
   });
   return (() => {
     const _el$3 = _tmpl$.cloneNode(true);
