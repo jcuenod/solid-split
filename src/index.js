@@ -89,7 +89,7 @@ const Split = (props) => {
     const [state, setState] = createState({ sizes: children.map(() => defaultSize) })
 
     return (
-        <div ref={parentRef} style={{ display: "flex", "flex-direction": vertical ? "column" : "row", flex: 1 }}>
+        <div ref={parentRef} style={{ display: "flex", "flex-direction": vertical ? "column" : "row", flex: 1, width: "100%", height: "100%" }}>
             <Child gutterSize={gutterSize} vertical={vertical} size={state.sizes[0]}>{children[0]}</Child>
             <For each={children.slice(1)}>
                 {(nextChild, index) =>

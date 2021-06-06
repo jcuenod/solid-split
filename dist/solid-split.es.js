@@ -116,6 +116,10 @@ const Split = props => {
 
     _el$3.style.setProperty("flex", 1);
 
+    _el$3.style.setProperty("width", "100%");
+
+    _el$3.style.setProperty("height", "100%");
+
     insert(_el$3, createComponent(Child, {
       gutterSize: gutterSize,
       vertical: vertical,
