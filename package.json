@@ -1,6 +1,6 @@
 {
     "name": "solid-split",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "Solid component for Split.js",
     "module": "dist/solid-split.es.js",
     "scripts": {
