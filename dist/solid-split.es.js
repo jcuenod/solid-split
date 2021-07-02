@@ -1,5 +1,5 @@
 import { template, addEventListener, effect, style, insert, createComponent, For, delegateEvents } from 'solid-js/web';
-import { createState } from 'solid-js';
+import { children, createState, createEffect } from 'solid-js';
 
 const _tmpl$ = template(`<div></div>`, 2);
 // const SNAP_POINTS = Array.from(new Array(11)).map((v, i) => (100 / 12) * (i + 1))
@@ -95,14 +95,17 @@ const Child = props => (() => {
 
 const Split = props => {
   let parentRef;
-  const {
-    children,
-    vertical,
-    gutterSize = DEFAULT_GUTTER_SIZE
-  } = props;
-  const defaultSize = 100 / children.length;
+  const gutterSize = props.gutterSize || DEFAULT_GUTTER_SIZE;
+  const childrenList = children(() => props.children);
+  const defaultSize = childrenList().length > 0 ? 100 / childrenList().length : 100;
   const [state, setState] = createState({
-    sizes: children.map(() => defaultSize)
+    sizes: childrenList().map(() => defaultSize)
+  });
+  createEffect(() => {
+    const defaultSize = childrenList().length > 0 ? 100 / childrenList().length : 100;
+    setState({
+      sizes: childrenList().map(() => defaultSize)
+    });
   });
   return (() => {
     const _el$3 = _tmpl$.cloneNode(true);
@@ -112,8 +115,6 @@ const Split = props => {
 
     _el$3.style.setProperty("display", "flex");
 
-    _el$3.style.setProperty("flex-direction", vertical ? "column" : "row");
-
     _el$3.style.setProperty("flex", 1);
 
     _el$3.style.setProperty("width", "100%");
@@ -122,26 +123,33 @@ const Split = props => {
 
     insert(_el$3, createComponent(Child, {
       gutterSize: gutterSize,
-      vertical: vertical,
+
+      get vertical() {
+        return props.vertical;
+      },
 
       get size() {
         return state.sizes[0];
       },
 
       get children() {
-        return children[0];
+        return childrenList()[0];
       }
 
     }), null);
 
     insert(_el$3, createComponent(For, {
       get each() {
-        return children.slice(1);
+        return childrenList().slice(1);
       },
 
       children: (nextChild, index) => [createComponent(Gutter, {
         gutterSize: gutterSize,
-        vertical: vertical,
+
+        get vertical() {
+          return props.vertical;
+        },
+
         parent: parentRef,
         onResize: newLeftTotal => {
           const i = index();
@@ -160,7 +168,10 @@ const Split = props => {
         }
       }), createComponent(Child, {
         gutterSize: gutterSize,
-        vertical: vertical,
+
+        get vertical() {
+          return props.vertical;
+        },
 
         get size() {
           return state.sizes[index() + 1];
@@ -169,6 +180,8 @@ const Split = props => {
         children: nextChild
       })]
     }), null);
+
+    effect(() => _el$3.style.setProperty("flex-direction", props.vertical ? "column" : "row"));
 
     return _el$3;
   })();

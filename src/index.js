@@ -1,4 +1,4 @@
-import { createState, createEffect } from "solid-js"
+import { createState, createEffect, children } from "solid-js"
 
 // const SNAP_DISTANCE = 2.5
 // const SNAP_POINTS = Array.from(new Array(11)).map((v, i) => (100 / 12) * (i + 1))
@@ -78,23 +78,32 @@ const Child = props =>
     </div >
 
 
-const Split = (props) => {
+const Split = props => {
     let parentRef
-    const {
-        children,
-        vertical,
-        gutterSize = DEFAULT_GUTTER_SIZE
-    } = props
-    const defaultSize = 100 / children.length
-    const [state, setState] = createState({ sizes: children.map(() => defaultSize) })
+    const gutterSize = props.gutterSize || DEFAULT_GUTTER_SIZE
+
+    const childrenList = children(() => props.children)
+
+    const defaultSize = childrenList().length > 0
+        ? 100 / childrenList().length
+        : 100
+
+
+    const [state, setState] = createState({ sizes: childrenList().map(() => defaultSize) })
+    createEffect(() => {
+        const defaultSize = childrenList().length > 0
+            ? 100 / childrenList().length
+            : 100
+        setState({ sizes: childrenList().map(() => defaultSize) })
+    })
 
     return (
-        <div ref={parentRef} style={{ display: "flex", "flex-direction": vertical ? "column" : "row", flex: 1, width: "100%", height: "100%" }}>
-            <Child gutterSize={gutterSize} vertical={vertical} size={state.sizes[0]}>{children[0]}</Child>
-            <For each={children.slice(1)}>
+        <div ref={parentRef} style={{ display: "flex", "flex-direction": props.vertical ? "column" : "row", flex: 1, width: "100%", height: "100%" }}>
+            <Child gutterSize={gutterSize} vertical={props.vertical} size={state.sizes[0]}>{childrenList()[0]}</Child>
+            <For each={childrenList().slice(1)}>
                 {(nextChild, index) =>
                     <>
-                        <Gutter gutterSize={gutterSize} vertical={vertical} parent={parentRef} onResize={newLeftTotal => {
+                        <Gutter gutterSize={gutterSize} vertical={props.vertical} parent={parentRef} onResize={newLeftTotal => {
                             const i = index()
 
                             const leftChildrenSizes = state.sizes.slice(0, i + 1)
@@ -110,7 +119,7 @@ const Split = (props) => {
 
                             setState({ sizes: [...newLeftSizes, ...newRightSizes] })
                         }} />
-                        <Child gutterSize={gutterSize} vertical={vertical} size={state.sizes[index() + 1]}>{nextChild}</Child>
+                        <Child gutterSize={gutterSize} vertical={props.vertical} size={state.sizes[index() + 1]}>{nextChild}</Child>
                     </>
                 }
             </For>
